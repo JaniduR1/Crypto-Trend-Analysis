@@ -248,7 +248,7 @@ This model showed the best trade-off between accuracy and balance across both ta
 | Macro Avg     | 0.56      | 0.56   | 0.56     | 596     |
 | Weighted Avg  | 0.56      | 0.56   | 0.56     | 596     |
 
-#### Visuals:
+#### Images:
 - `images/confusion_matrix_rf_final.png` — Final model’s prediction breakdown
 - `images/classification_report_rf_final.txt` — Detailed metrics for each class
 

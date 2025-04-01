@@ -116,8 +116,10 @@ Initially, the logistic regression model always predicted class `1` (Bitcoin goi
 So the model plays it safe and always says "BTC will go up" — it appears accurate, but it's actually **blind to half the problem**.
 
 
-To improve the initial model's performance, the dataset was  balanced using **SMOTE (Synthetic Minority Over-sampling Technique)**.  
-```Example: if we had 400 yes's to something and 40 no's it would predict yes for all of them for safety based on the stastics. but using smote it would create an additonal 200 no's or 360 no's to balance out the yes's?```
+To improve the initial model's performance, the dataset was  balanced using **SMOTE (Synthetic Minority Over-sampling Technique)**.
+
+Example:
+```if we had 400 yes's to something and 40 no's it would predict yes for all of them for safety based on the stastics. but using smote it would create an additonal 200 no's or 360 no's to balance out the yes's?```
 
 
 __Used SMOTE to:__
@@ -169,5 +171,89 @@ By fixing the class imbalance before training, the model is forced to pay attent
 - `images/classification_report_balanced.txt` — Saved performance breakdown
 
 ---
+
+## Random Forest Model (After SMOTE Balancing)
+
+After balancing the training data using SMOTE, a **Random Forest model** was trained and tested to predict whether Bitcoin will go up or not.
+
+This model uses an number of decision trees to capture more complex, non-linear relationships in the data, which simpler models like logistic regression may miss.
+
+Example:
+```text
+                     [Rolling Mean (5D) > 0.015?]
+                            /           \
+                          Yes           No
+                 [Volatility < 0.025?]   [Return > 0?]
+                     /       \              /    \
+                 [Lag1 > 0]  [Lag1 < 0]   0      1
+                    /   \       /  \
+                   1     0     0    1
+```
+Each tree makes predictions by asking a series of questions. The **depth** of a tree refers to how many layers of questions it can ask before making a final prediction.
+The deeper the tree, the more complex patterns it can learn, but this also increases the risk of overfitting.
+
+#### Results (Random Forest, Balanced Dataset)
+
+| Class               | Precision | Recall | F1-score | Support |
+|---------------------|-----------|--------|----------|---------|
+| Did Not Increase (0)| 0.49      | 0.48   | 0.49     | 294     |
+| Increased (1)       | 0.50      | 0.52   | 0.51     | 302     |
+
+**Overall Metrics:**
+
+| Metric        | Precision | Recall | F1-score | Support |
+|---------------|-----------|--------|----------|---------|
+| Accuracy      | –         | –      | 0.50     | 596     |
+| Macro Avg     | 0.50      | 0.50   | 0.50     | 596     |
+| Weighted Avg  | 0.50      | 0.50   | 0.50     | 596     |
+
+#### Images:
+- `images/confusion_matrix_rf.png` — Visualisation of Random Forest predictions
+- `images/classification_report_rf.txt` — Full precision/recall breakdown
+
+#### Insight:
+Although the accuracy was similar to logistic regression, the Random Forest model was able to detect both classes equally well. This reflects a fairer and more stable decision boundary — especially important for volatile assets like Bitcoin.
+
+
+### Improved V2 Model: Tuned Random Forest Classifier (Best Performance)
+
+After testing multiple hyperparameter combinations, a **Random Forest model** with optimised settings was selected as the 'final' version.
+
+This model showed the best trade-off between accuracy and balance across both target classes. It outperformed all previous configurations, including the default logistic regression and earlier forest versions.
+
+#### Improved V2 Model Configuration
+
+| Parameter            | Value   |
+|----------------------|---------|
+| `n_estimators`       | 100     |
+| `max_depth`          | 8       |
+| `min_samples_split`  | 50      |
+| `min_samples_leaf`   | 2       |
+| `max_features`       | 'sqrt'  |
+| `random_state`       | 69      |
+
+
+#### Final Evaluation Metrics
+
+| Class               | Precision | Recall | F1-score | Support |
+|---------------------|-----------|--------|----------|---------|
+| Did Not Increase (0)| 0.56      | 0.59   | 0.58     | 294     |
+| Increased (1)       | 0.55      | 0.52   | 0.53     | 302     |
+
+**Overall Metrics:**
+
+| Metric        | Precision | Recall | F1-score | Support |
+|---------------|-----------|--------|----------|---------|
+| Accuracy      | –         | –      | **0.555**| 596     |
+| Macro Avg     | 0.56      | 0.56   | 0.56     | 596     |
+| Weighted Avg  | 0.56      | 0.56   | 0.56     | 596     |
+
+#### Visuals:
+- `images/confusion_matrix_rf_final.png` — Final model’s prediction breakdown
+- `images/classification_report_rf_final.txt` — Detailed metrics for each class
+
+#### Notes
+This version of the model was chosen as the best-performing classifier based on accuracy, fairness across both labels, and resistance to overfitting. It represents the final model deployed in the Streamlit app and published to the public portfolio.
+
 
 

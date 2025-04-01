@@ -4,6 +4,14 @@ This project analyses the historical performance and volatility of Bitcoin (BTC-
 
 The goal is to not just visualise Bitcoin’s price movements, but also generate meaningful insights such as return patterns and risk indicators which can feed into simple machine learning models for prediction, which simulates how fintech platforms assess market behaviour to drive features like risk alerts, portfolio insights, or trading signals.
 
+#### Local Development
+
+To run locally with all packages:
+
+```bash
+pip install -r dev-requirements.txt
+```
+
 ---
 
 ## Tools Used
